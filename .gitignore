@@ -1,0 +1,43 @@
+# Denizen log files
+plugins/Denizen/scripts/logs/
+
+# Config files with sensitive information
+plugins/Denizen/scripts/config.json
+
+# Denizen temporary files (optional)
+plugins/Denizen/data/
+plugins/Denizen/debug/
+plugins/Denizen/errors/
+
+# Server crash reports
+crash-reports/
+*.log
+
+# Plugin-specific data (optional, if not needed for version control)
+plugins/Denizen/saves.yml
+plugins/Dynmap/web/
+plugins/Essentials/userdata/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE-specific files
+*.swp
+*.swo
+.idea/
+*.vscode/
+
+# Backup and archive files
+*.bak
+*.tmp
+*.gz
+*.zip
+*.rar
+*.7z
+
+# Minecraft server jar and world files (optional, if not versioning them)
+*.jar
+world/
+world_nether/
+world_the_end/
