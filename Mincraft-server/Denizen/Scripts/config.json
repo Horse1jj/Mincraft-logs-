@@ -1,0 +1,9 @@
+{
+  "webhooks": {
+    "chat": "https://example.com/webhook/chat",
+    "block_break": "https://example.com/webhook/block_break",
+    "block_place": "https://example.com/webhook/block_place",
+    "join": "https://example.com/webhook/join",
+    "quit": "https://example.com/webhook/quit"
+  }
+}
