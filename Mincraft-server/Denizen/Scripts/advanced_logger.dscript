@@ -1,1 +1,80 @@
+# Advanced Logger with Webhook Integration
+# This script logs Minecraft events to files and sends data to webhooks.
+
+advanced_logger:
+  type: world
+  debug: false
+
+  # Define events to log
+  events:
+
+    # Player sends a chat message
+    on player chats:
+      - determine cancelled
+      - run log_event name:chat message:<context.message> player:<player.name>
+
+    # Player breaks a block
+    on player breaks block:
+      - run log_event name:block_break block:<context.material> location:<context.location> player:<player.name>
+
+    # Player places a block
+    on player places block:
+      - run log_event name:block_place block:<context.material> location:<context.location> player:<player.name>
+
+    # Player joins the server
+    on player joins:
+      - run log_event name:join message:<player.name> has joined the game.
+
+    # Player quits the server
+    on player quits:
+      - run log_event name:quit message:<player.name> has left the game.
+
+# Task to handle logging and webhook requests
+log_event:
+  type: task
+  debug: false
+
+  definitions:
+    - name        # Event type (e.g., chat, block_break)
+    - message     # Log message or content
+    - player:<[player]>  # (Optional) Player name
+    - block:<[block]>    # (Optional) Block material
+    - location:<[location]>  # (Optional) Block location
+
+  steps:
+    # Read webhook URL from the configuration file
+    - define config_file "plugins/Denizen/scripts/config.json"
+    - define webhook_url "<util.json_read_key[<[config_file]>,webhooks.<[name]>]>"
+
+    # Format the log message
+    - define current_time <util.date[HH:mm:ss]>
+    - define log_message "[<[current_time]>] <[player].if_null[Anonymous]>: <[message]> <[block].if_present[ at <[location]>]>"
+
+    # Log to a file
+    - define current_date <util.date[yyyy-MM-dd]>
+    - define log_file "plugins/Denizen/scripts/logs/<[name]>_<[current_date]>.log"
+    - file append path:<[log_file]> text:"<[log_message]>"
+
+    # Send to webhook if a URL is configured
+    - if <[webhook_url].is_not_empty>:
+        - define json_payload "{ \"content\": \"<[log_message]>\" }"
+        - webget url:<[webhook_url]> method:POST headers:{"Content-Type":"application/json"} body:<[json_payload]>
+
+    # Debug (optional: shows the log details in the server console)
+    - narrate "Logged: <[log_message]> to file <[log_file]> and webhook: <[webhook_url]> (if configured)."
+
+# Optional task to clean up old log files
+cleanup_old_logs:
+  type: task
+  debug: false
+  schedule:
+    every: 1d
+    delay: 0s
+
+  script:
+    - define log_folder "plugins/Denizen/scripts/logs/"
+    - define old_date <util.date[yyyy-MM-dd, offset:-7d]>
+    - foreach <util.list_files[<[log_folder]>]> as:file:
+        - if <[file].name.contains[<[old_date]>]>:
+            - file delete path:<[file].path>
 
