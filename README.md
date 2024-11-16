@@ -16,8 +16,9 @@ Local File Logging: Saves logs in categorized and date-stamped files.
 
 Scheduled Cleanup: Automatically deletes logs older than 7 days (optional).
 
-Folder Structure
+## Folder Structure
 
+``` bash 
 minecraft-server/
 ├── plugins/
 │   ├── Denizen/
@@ -27,6 +28,7 @@ minecraft-server/
 │   │   │   ├── logs/                     # Folder for log files (auto-created)
 │   │   │   └── README.md                 # This file
 
+```
 ## Setup Instructions
 
 **1. Install Denizen**
